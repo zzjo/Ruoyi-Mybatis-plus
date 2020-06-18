@@ -1,12 +1,8 @@
 ## 平台简介
 
-一直想做一款后台管理系统，看了很多优秀的开源项目但是发现没有合适的。于是利用空闲休息时间开始自己写了一套后台系统。如此有了若依。她可以用于所有的Web应用程序，如网站管理后台，网站会员中心，CMS，CRM，OA。所有前端后台代码封装过后十分精简易上手，出错概率低。同时支持移动客户端访问。系统会陆续更新一些实用功能。
+基于若依4.2框架，增加了lombok和mybatis-plus，并且把基础模块做了修改调整。
 
-性别男，若依是给还没有出生女儿取的名字（寓意：你若不离不弃，我必生死相依）
-
-* 感谢 [hplus](https://gitee.com/hplus_admin/hplus) 后台主题 UI 框架。
-* 前后端分离版本，请移步[RuoYi-Vue](https://gitee.com/y_project/RuoYi-Vue)，微服务版本，请移步[RuoYi-Cloud](https://gitee.com/y_project/RuoYi-Cloud)
-* 阿里云优惠券：[点我进入](https://www.aliyun.com/minisite/goods?userCode=brki8iof&share_source=copy_link)，腾讯云优惠券：[点我领取](https://cloud.tencent.com/redirect.php?redirect=1025&cps_key=198c8df2ed259157187173bc7f4f32fd&from=console)&nbsp;&nbsp;
+在此感谢若依的作者，并欢迎各路大神指正。
 
 ## 内置功能
 
