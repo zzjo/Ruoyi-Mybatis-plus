@@ -32,6 +32,7 @@
 		<jsoup.version>1.11.3</jsoup.version>
 		<poi.version>3.17</poi.version>
 		<velocity.version>1.7</velocity.version>
+		<activiti.version>5.22.0</activiti.version>
 	</properties>
 	
     <!-- 依赖声明 -->
@@ -53,8 +54,8 @@
 	            <artifactId>druid-spring-boot-starter</artifactId>
 	            <version>${druid.version}</version>
 	        </dependency>
-	        
-	        <!--验证码 -->
+
+            <!--验证码 -->
 			<dependency>
 				<groupId>com.github.penggle</groupId>
 				<artifactId>kaptcha</artifactId>
@@ -196,6 +197,32 @@
 				<artifactId>dozer</artifactId>
 				<version>5.4.0</version>
 			</dependency>
+
+			<!-- activiti -->
+			<dependency>
+				<groupId>org.activiti</groupId>
+				<artifactId>activiti-engine</artifactId>
+				<version>${activiti.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.activiti</groupId>
+				<artifactId>activiti-spring</artifactId>
+				<version>${activiti.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.activiti</groupId>
+				<artifactId>activiti-modeler</artifactId>
+				<version>${activiti.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.activiti</groupId>
+				<artifactId>activiti-diagram-rest</artifactId>
+				<version>${activiti.version}</version>
+			</dependency>
+			<!--end activiti-->
             
             <!-- 定时任务-->
 			<dependency>
@@ -231,6 +258,13 @@
 	            <artifactId>ruoyi-common</artifactId>
 	            <version>${ruoyi.version}</version>
 	        </dependency>
+
+			<!-- 流程工具-->
+			<dependency>
+				<groupId>com.ruoyi</groupId>
+				<artifactId>ruoyi-activiti</artifactId>
+				<version>${ruoyi.version}</version>
+			</dependency>
 	        
         </dependencies>
     </dependencyManagement>
@@ -242,7 +276,8 @@
 		<module>ruoyi-quartz</module>
 		<module>ruoyi-generator</module>
         <module>ruoyi-common</module>
-    </modules>
+		<module>ruoyi-activiti</module>
+	</modules>
     <packaging>pom</packaging>
 
 	<build>

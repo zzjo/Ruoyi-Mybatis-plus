@@ -55,3 +55,7 @@ spring:
                 wall:
                     config:
                         multi-statement-allow: true
+
+    activiti:
+        #数据库类型
+        database-type: mysql

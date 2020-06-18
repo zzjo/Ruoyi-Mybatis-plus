@@ -1,2 +1,16 @@
 # Project-level settings
 /.tgitconfig
+/.idea
+/ruoyi.iml
+/ruoyi-admin/target
+/ruoyi-admin/ruoyi-admin.iml
+/ruoyi-common/target
+/ruoyi-common/ruoyi-common.iml
+/ruoyi-framework/ruoyi-framework.iml
+/ruoyi-framework/target
+/ruoyi-generator/target
+/ruoyi-generator/ruoyi-generator.iml
+/ruoyi-quartz/target
+/ruoyi-quartz/ruoyi-quartz.iml
+/ruoyi-system/target
+/ruoyi-system/ruoyi-system.iml

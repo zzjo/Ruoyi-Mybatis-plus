@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<th:block th:include="include :: header('节点处理人设置')" />
+</head>
+<body class="gray-bg">
+    <div class="form-content">
+        <form class="form-horizontal" id="form-assignee-add">
+            <input type="hidden" name="deploymentId" th:value="${deploymentId}"/>
+            <ul class="nav nav-tabs">
+                <li th:each="act,actStat:${actList}" th:class="${actStat.index==0}?'active':''">
+                    <a th:href="'#'+${actStat.index}" data-toggle="tab">
+                        [[${act.name}]]
+                    </a>
+                </li>
+            </ul>
+            <!-- 每个tab页对应的内容 -->
+            <div id="myTabContent" class="tab-content">
+                <div th:each="act,actStat:${actList}" th:class="${actStat.index==0}?'tab-pane fade in active':'tab-pane fade'" th:id="${actStat.index}">
+                    <div class="row" th:each="r,roleStat:${act.boxJson}">
+                        <div class="col-sm-6" style="margin-left: 30px;">
+                            <div class="form-group">
+                                <label class="check-box">
+                                    <input type="checkbox" th:name="${actStat.index}+'_'+${roleStat.index}+'_role_'+${act.id}+'_'+${act.name}"
+                                           th:value="${r.id}" th:text="${r.name}" th:checked="${r.check}">
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="row">
+        <div class="col-sm-offset-5 col-sm-10">
+            <button type="button" class="btn btn-sm btn-primary" onclick="submitHandler()"><i class="fa fa-check"></i>保 存</button>&nbsp;
+            <button type="button" class="btn btn-sm btn-danger" onclick="closeItem()"><i class="fa fa-reply-all"></i>关 闭 </button>
+        </div>
+    </div>
+    <div th:include="include :: footer"></div>
+    <script th:inline="javascript">
+        var prefix = ctx + "activiti/assignee";
+
+        function submitHandler() {
+            var data = $("#form-assignee-add").serializeArray();
+            $.operate.saveTab(prefix + "/edit", data);
+        }
+
+    </script>
+</body>
+</html>
