@@ -11,7 +11,7 @@
  Target Server Version : 50728
  File Encoding         : 65001
 
- Date: 18/06/2020 19:33:23
+ Date: 18/06/2020 19:52:40
 */
 
 SET NAMES utf8mb4;
@@ -30,6 +30,494 @@ CREATE TABLE `act_assignee`  (
   `activti_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '节点名称',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '流程节点设置表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for act_evt_log
+-- ----------------------------
+DROP TABLE IF EXISTS `act_evt_log`;
+CREATE TABLE `act_evt_log`  (
+  `LOG_NR_` bigint(20) NOT NULL AUTO_INCREMENT,
+  `TYPE_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `TASK_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `TIME_STAMP_` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  `USER_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `DATA_` longblob NULL,
+  `LOCK_OWNER_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `LOCK_TIME_` timestamp(3) NULL DEFAULT NULL,
+  `IS_PROCESSED_` tinyint(4) NULL DEFAULT 0,
+  PRIMARY KEY (`LOG_NR_`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for act_ge_bytearray
+-- ----------------------------
+DROP TABLE IF EXISTS `act_ge_bytearray`;
+CREATE TABLE `act_ge_bytearray`  (
+  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `REV_` int(11) NULL DEFAULT NULL,
+  `NAME_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `DEPLOYMENT_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `BYTES_` longblob NULL,
+  `GENERATED_` tinyint(4) NULL DEFAULT NULL,
+  PRIMARY KEY (`ID_`) USING BTREE,
+  INDEX `ACT_FK_BYTEARR_DEPL`(`DEPLOYMENT_ID_`) USING BTREE,
+  CONSTRAINT `ACT_FK_BYTEARR_DEPL` FOREIGN KEY (`DEPLOYMENT_ID_`) REFERENCES `act_re_deployment` (`ID_`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for act_ge_property
+-- ----------------------------
+DROP TABLE IF EXISTS `act_ge_property`;
+CREATE TABLE `act_ge_property`  (
+  `NAME_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `VALUE_` varchar(300) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `REV_` int(11) NULL DEFAULT NULL,
+  PRIMARY KEY (`NAME_`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of act_ge_property
+-- ----------------------------
+INSERT INTO `act_ge_property` VALUES ('next.dbid', '1', 1);
+INSERT INTO `act_ge_property` VALUES ('schema.history', 'create(5.22.0.0)', 1);
+INSERT INTO `act_ge_property` VALUES ('schema.version', '5.22.0.0', 1);
+
+-- ----------------------------
+-- Table structure for act_hi_actinst
+-- ----------------------------
+DROP TABLE IF EXISTS `act_hi_actinst`;
+CREATE TABLE `act_hi_actinst`  (
+  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `PROC_DEF_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `PROC_INST_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `EXECUTION_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `ACT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `TASK_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `CALL_PROC_INST_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `ACT_NAME_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `ACT_TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `ASSIGNEE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `START_TIME_` datetime(3) NULL,
+  `END_TIME_` datetime(3) NULL DEFAULT NULL,
+  `DURATION_` bigint(20) NULL DEFAULT NULL,
+  `TENANT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT '',
+  PRIMARY KEY (`ID_`) USING BTREE,
+  INDEX `ACT_IDX_HI_ACT_INST_START`(`START_TIME_`) USING BTREE,
+  INDEX `ACT_IDX_HI_ACT_INST_END`(`END_TIME_`) USING BTREE,
+  INDEX `ACT_IDX_HI_ACT_INST_PROCINST`(`PROC_INST_ID_`, `ACT_ID_`) USING BTREE,
+  INDEX `ACT_IDX_HI_ACT_INST_EXEC`(`EXECUTION_ID_`, `ACT_ID_`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for act_hi_attachment
+-- ----------------------------
+DROP TABLE IF EXISTS `act_hi_attachment`;
+CREATE TABLE `act_hi_attachment`  (
+  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `REV_` int(11) NULL DEFAULT NULL,
+  `USER_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `NAME_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `DESCRIPTION_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `TASK_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `URL_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `CONTENT_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `TIME_` datetime(3) NULL DEFAULT NULL,
+  PRIMARY KEY (`ID_`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for act_hi_comment
+-- ----------------------------
+DROP TABLE IF EXISTS `act_hi_comment`;
+CREATE TABLE `act_hi_comment`  (
+  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `TIME_` datetime(3) NULL,
+  `USER_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `TASK_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `ACTION_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `MESSAGE_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `FULL_MSG_` longblob NULL,
+  PRIMARY KEY (`ID_`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for act_hi_detail
+-- ----------------------------
+DROP TABLE IF EXISTS `act_hi_detail`;
+CREATE TABLE `act_hi_detail`  (
+  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `PROC_INST_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `TASK_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `ACT_INST_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `NAME_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `VAR_TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `REV_` int(11) NULL DEFAULT NULL,
+  `TIME_` datetime(3) NULL,
+  `BYTEARRAY_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `DOUBLE_` double NULL DEFAULT NULL,
+  `LONG_` bigint(20) NULL DEFAULT NULL,
+  `TEXT_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `TEXT2_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  PRIMARY KEY (`ID_`) USING BTREE,
+  INDEX `ACT_IDX_HI_DETAIL_PROC_INST`(`PROC_INST_ID_`) USING BTREE,
+  INDEX `ACT_IDX_HI_DETAIL_ACT_INST`(`ACT_INST_ID_`) USING BTREE,
+  INDEX `ACT_IDX_HI_DETAIL_TIME`(`TIME_`) USING BTREE,
+  INDEX `ACT_IDX_HI_DETAIL_NAME`(`NAME_`) USING BTREE,
+  INDEX `ACT_IDX_HI_DETAIL_TASK_ID`(`TASK_ID_`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for act_hi_identitylink
+-- ----------------------------
+DROP TABLE IF EXISTS `act_hi_identitylink`;
+CREATE TABLE `act_hi_identitylink`  (
+  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `GROUP_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `USER_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `TASK_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  PRIMARY KEY (`ID_`) USING BTREE,
+  INDEX `ACT_IDX_HI_IDENT_LNK_USER`(`USER_ID_`) USING BTREE,
+  INDEX `ACT_IDX_HI_IDENT_LNK_TASK`(`TASK_ID_`) USING BTREE,
+  INDEX `ACT_IDX_HI_IDENT_LNK_PROCINST`(`PROC_INST_ID_`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for act_hi_procinst
+-- ----------------------------
+DROP TABLE IF EXISTS `act_hi_procinst`;
+CREATE TABLE `act_hi_procinst`  (
+  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `PROC_INST_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `BUSINESS_KEY_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `START_TIME_` datetime(3) NULL,
+  `END_TIME_` datetime(3) NULL DEFAULT NULL,
+  `DURATION_` bigint(20) NULL DEFAULT NULL,
+  `START_USER_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `START_ACT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `END_ACT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `SUPER_PROCESS_INSTANCE_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `DELETE_REASON_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `TENANT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT '',
+  `NAME_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  PRIMARY KEY (`ID_`) USING BTREE,
+  UNIQUE INDEX `PROC_INST_ID_`(`PROC_INST_ID_`) USING BTREE,
+  INDEX `ACT_IDX_HI_PRO_INST_END`(`END_TIME_`) USING BTREE,
+  INDEX `ACT_IDX_HI_PRO_I_BUSKEY`(`BUSINESS_KEY_`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for act_hi_taskinst
+-- ----------------------------
+DROP TABLE IF EXISTS `act_hi_taskinst`;
+CREATE TABLE `act_hi_taskinst`  (
+  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `PROC_DEF_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `TASK_DEF_KEY_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `NAME_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `PARENT_TASK_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `DESCRIPTION_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `OWNER_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `ASSIGNEE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `START_TIME_` datetime(3) NULL,
+  `CLAIM_TIME_` datetime(3) NULL DEFAULT NULL,
+  `END_TIME_` datetime(3) NULL DEFAULT NULL,
+  `DURATION_` bigint(20) NULL DEFAULT NULL,
+  `DELETE_REASON_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `PRIORITY_` int(11) NULL DEFAULT NULL,
+  `DUE_DATE_` datetime(3) NULL DEFAULT NULL,
+  `FORM_KEY_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `CATEGORY_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `TENANT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT '',
+  PRIMARY KEY (`ID_`) USING BTREE,
+  INDEX `ACT_IDX_HI_TASK_INST_PROCINST`(`PROC_INST_ID_`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for act_hi_varinst
+-- ----------------------------
+DROP TABLE IF EXISTS `act_hi_varinst`;
+CREATE TABLE `act_hi_varinst`  (
+  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `PROC_INST_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `TASK_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `NAME_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `VAR_TYPE_` varchar(100) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `REV_` int(11) NULL DEFAULT NULL,
+  `BYTEARRAY_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `DOUBLE_` double NULL DEFAULT NULL,
+  `LONG_` bigint(20) NULL DEFAULT NULL,
+  `TEXT_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `TEXT2_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `CREATE_TIME_` datetime(3) NULL DEFAULT NULL,
+  `LAST_UPDATED_TIME_` datetime(3) NULL DEFAULT NULL,
+  PRIMARY KEY (`ID_`) USING BTREE,
+  INDEX `ACT_IDX_HI_PROCVAR_PROC_INST`(`PROC_INST_ID_`) USING BTREE,
+  INDEX `ACT_IDX_HI_PROCVAR_NAME_TYPE`(`NAME_`, `VAR_TYPE_`) USING BTREE,
+  INDEX `ACT_IDX_HI_PROCVAR_TASK_ID`(`TASK_ID_`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for act_procdef_info
+-- ----------------------------
+DROP TABLE IF EXISTS `act_procdef_info`;
+CREATE TABLE `act_procdef_info`  (
+  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `PROC_DEF_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `REV_` int(11) NULL DEFAULT NULL,
+  `INFO_JSON_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  PRIMARY KEY (`ID_`) USING BTREE,
+  UNIQUE INDEX `ACT_UNIQ_INFO_PROCDEF`(`PROC_DEF_ID_`) USING BTREE,
+  INDEX `ACT_IDX_INFO_PROCDEF`(`PROC_DEF_ID_`) USING BTREE,
+  INDEX `ACT_FK_INFO_JSON_BA`(`INFO_JSON_ID_`) USING BTREE,
+  CONSTRAINT `ACT_FK_INFO_JSON_BA` FOREIGN KEY (`INFO_JSON_ID_`) REFERENCES `act_ge_bytearray` (`ID_`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `ACT_FK_INFO_PROCDEF` FOREIGN KEY (`PROC_DEF_ID_`) REFERENCES `act_re_procdef` (`ID_`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for act_re_deployment
+-- ----------------------------
+DROP TABLE IF EXISTS `act_re_deployment`;
+CREATE TABLE `act_re_deployment`  (
+  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `NAME_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `CATEGORY_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `TENANT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT '',
+  `DEPLOY_TIME_` timestamp(3) NULL DEFAULT NULL,
+  PRIMARY KEY (`ID_`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for act_re_model
+-- ----------------------------
+DROP TABLE IF EXISTS `act_re_model`;
+CREATE TABLE `act_re_model`  (
+  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `REV_` int(11) NULL DEFAULT NULL,
+  `NAME_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `KEY_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `CATEGORY_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `CREATE_TIME_` timestamp(3) NULL DEFAULT NULL,
+  `LAST_UPDATE_TIME_` timestamp(3) NULL DEFAULT NULL,
+  `VERSION_` int(11) NULL DEFAULT NULL,
+  `META_INFO_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `DEPLOYMENT_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `EDITOR_SOURCE_VALUE_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `EDITOR_SOURCE_EXTRA_VALUE_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `TENANT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT '',
+  PRIMARY KEY (`ID_`) USING BTREE,
+  INDEX `ACT_FK_MODEL_SOURCE`(`EDITOR_SOURCE_VALUE_ID_`) USING BTREE,
+  INDEX `ACT_FK_MODEL_SOURCE_EXTRA`(`EDITOR_SOURCE_EXTRA_VALUE_ID_`) USING BTREE,
+  INDEX `ACT_FK_MODEL_DEPLOYMENT`(`DEPLOYMENT_ID_`) USING BTREE,
+  CONSTRAINT `ACT_FK_MODEL_DEPLOYMENT` FOREIGN KEY (`DEPLOYMENT_ID_`) REFERENCES `act_re_deployment` (`ID_`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `ACT_FK_MODEL_SOURCE` FOREIGN KEY (`EDITOR_SOURCE_VALUE_ID_`) REFERENCES `act_ge_bytearray` (`ID_`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `ACT_FK_MODEL_SOURCE_EXTRA` FOREIGN KEY (`EDITOR_SOURCE_EXTRA_VALUE_ID_`) REFERENCES `act_ge_bytearray` (`ID_`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for act_re_procdef
+-- ----------------------------
+DROP TABLE IF EXISTS `act_re_procdef`;
+CREATE TABLE `act_re_procdef`  (
+  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `REV_` int(11) NULL DEFAULT NULL,
+  `CATEGORY_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `NAME_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `KEY_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `VERSION_` int(11) NOT NULL,
+  `DEPLOYMENT_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `RESOURCE_NAME_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `DGRM_RESOURCE_NAME_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `DESCRIPTION_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `HAS_START_FORM_KEY_` tinyint(4) NULL DEFAULT NULL,
+  `HAS_GRAPHICAL_NOTATION_` tinyint(4) NULL DEFAULT NULL,
+  `SUSPENSION_STATE_` int(11) NULL DEFAULT NULL,
+  `TENANT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT '',
+  PRIMARY KEY (`ID_`) USING BTREE,
+  UNIQUE INDEX `ACT_UNIQ_PROCDEF`(`KEY_`, `VERSION_`, `TENANT_ID_`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for act_ru_event_subscr
+-- ----------------------------
+DROP TABLE IF EXISTS `act_ru_event_subscr`;
+CREATE TABLE `act_ru_event_subscr`  (
+  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `REV_` int(11) NULL DEFAULT NULL,
+  `EVENT_TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `EVENT_NAME_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `ACTIVITY_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `CONFIGURATION_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `CREATED_` timestamp(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `PROC_DEF_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `TENANT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT '',
+  PRIMARY KEY (`ID_`) USING BTREE,
+  INDEX `ACT_IDX_EVENT_SUBSCR_CONFIG_`(`CONFIGURATION_`) USING BTREE,
+  INDEX `ACT_FK_EVENT_EXEC`(`EXECUTION_ID_`) USING BTREE,
+  CONSTRAINT `ACT_FK_EVENT_EXEC` FOREIGN KEY (`EXECUTION_ID_`) REFERENCES `act_ru_execution` (`ID_`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for act_ru_execution
+-- ----------------------------
+DROP TABLE IF EXISTS `act_ru_execution`;
+CREATE TABLE `act_ru_execution`  (
+  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `REV_` int(11) NULL DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `BUSINESS_KEY_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `PARENT_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `SUPER_EXEC_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `ACT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `IS_ACTIVE_` tinyint(4) NULL DEFAULT NULL,
+  `IS_CONCURRENT_` tinyint(4) NULL DEFAULT NULL,
+  `IS_SCOPE_` tinyint(4) NULL DEFAULT NULL,
+  `IS_EVENT_SCOPE_` tinyint(4) NULL DEFAULT NULL,
+  `SUSPENSION_STATE_` int(11) NULL DEFAULT NULL,
+  `CACHED_ENT_STATE_` int(11) NULL DEFAULT NULL,
+  `TENANT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT '',
+  `NAME_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `LOCK_TIME_` timestamp(3) NULL DEFAULT NULL,
+  PRIMARY KEY (`ID_`) USING BTREE,
+  INDEX `ACT_IDX_EXEC_BUSKEY`(`BUSINESS_KEY_`) USING BTREE,
+  INDEX `ACT_FK_EXE_PROCINST`(`PROC_INST_ID_`) USING BTREE,
+  INDEX `ACT_FK_EXE_PARENT`(`PARENT_ID_`) USING BTREE,
+  INDEX `ACT_FK_EXE_SUPER`(`SUPER_EXEC_`) USING BTREE,
+  INDEX `ACT_FK_EXE_PROCDEF`(`PROC_DEF_ID_`) USING BTREE,
+  CONSTRAINT `ACT_FK_EXE_PARENT` FOREIGN KEY (`PARENT_ID_`) REFERENCES `act_ru_execution` (`ID_`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `ACT_FK_EXE_PROCDEF` FOREIGN KEY (`PROC_DEF_ID_`) REFERENCES `act_re_procdef` (`ID_`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `ACT_FK_EXE_PROCINST` FOREIGN KEY (`PROC_INST_ID_`) REFERENCES `act_ru_execution` (`ID_`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `ACT_FK_EXE_SUPER` FOREIGN KEY (`SUPER_EXEC_`) REFERENCES `act_ru_execution` (`ID_`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for act_ru_identitylink
+-- ----------------------------
+DROP TABLE IF EXISTS `act_ru_identitylink`;
+CREATE TABLE `act_ru_identitylink`  (
+  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `REV_` int(11) NULL DEFAULT NULL,
+  `GROUP_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `USER_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `TASK_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  PRIMARY KEY (`ID_`) USING BTREE,
+  INDEX `ACT_IDX_IDENT_LNK_USER`(`USER_ID_`) USING BTREE,
+  INDEX `ACT_IDX_IDENT_LNK_GROUP`(`GROUP_ID_`) USING BTREE,
+  INDEX `ACT_IDX_ATHRZ_PROCEDEF`(`PROC_DEF_ID_`) USING BTREE,
+  INDEX `ACT_FK_TSKASS_TASK`(`TASK_ID_`) USING BTREE,
+  INDEX `ACT_FK_IDL_PROCINST`(`PROC_INST_ID_`) USING BTREE,
+  CONSTRAINT `ACT_FK_ATHRZ_PROCEDEF` FOREIGN KEY (`PROC_DEF_ID_`) REFERENCES `act_re_procdef` (`ID_`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `ACT_FK_IDL_PROCINST` FOREIGN KEY (`PROC_INST_ID_`) REFERENCES `act_ru_execution` (`ID_`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `ACT_FK_TSKASS_TASK` FOREIGN KEY (`TASK_ID_`) REFERENCES `act_ru_task` (`ID_`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for act_ru_job
+-- ----------------------------
+DROP TABLE IF EXISTS `act_ru_job`;
+CREATE TABLE `act_ru_job`  (
+  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `REV_` int(11) NULL DEFAULT NULL,
+  `TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `LOCK_EXP_TIME_` timestamp(3) NULL DEFAULT NULL,
+  `LOCK_OWNER_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `EXCLUSIVE_` tinyint(1) NULL DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `PROCESS_INSTANCE_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `RETRIES_` int(11) NULL DEFAULT NULL,
+  `EXCEPTION_STACK_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `EXCEPTION_MSG_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `DUEDATE_` timestamp(3) NULL DEFAULT NULL,
+  `REPEAT_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `HANDLER_TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `HANDLER_CFG_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `TENANT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT '',
+  PRIMARY KEY (`ID_`) USING BTREE,
+  INDEX `ACT_FK_JOB_EXCEPTION`(`EXCEPTION_STACK_ID_`) USING BTREE,
+  CONSTRAINT `ACT_FK_JOB_EXCEPTION` FOREIGN KEY (`EXCEPTION_STACK_ID_`) REFERENCES `act_ge_bytearray` (`ID_`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for act_ru_task
+-- ----------------------------
+DROP TABLE IF EXISTS `act_ru_task`;
+CREATE TABLE `act_ru_task`  (
+  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `REV_` int(11) NULL DEFAULT NULL,
+  `EXECUTION_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `NAME_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `PARENT_TASK_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `DESCRIPTION_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `TASK_DEF_KEY_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `OWNER_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `ASSIGNEE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `DELEGATION_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `PRIORITY_` int(11) NULL DEFAULT NULL,
+  `CREATE_TIME_` timestamp(3) NULL DEFAULT NULL,
+  `DUE_DATE_` datetime(3) NULL DEFAULT NULL,
+  `CATEGORY_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `SUSPENSION_STATE_` int(11) NULL DEFAULT NULL,
+  `TENANT_ID_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT '',
+  `FORM_KEY_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  PRIMARY KEY (`ID_`) USING BTREE,
+  INDEX `ACT_IDX_TASK_CREATE`(`CREATE_TIME_`) USING BTREE,
+  INDEX `ACT_FK_TASK_EXE`(`EXECUTION_ID_`) USING BTREE,
+  INDEX `ACT_FK_TASK_PROCINST`(`PROC_INST_ID_`) USING BTREE,
+  INDEX `ACT_FK_TASK_PROCDEF`(`PROC_DEF_ID_`) USING BTREE,
+  CONSTRAINT `ACT_FK_TASK_EXE` FOREIGN KEY (`EXECUTION_ID_`) REFERENCES `act_ru_execution` (`ID_`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `ACT_FK_TASK_PROCDEF` FOREIGN KEY (`PROC_DEF_ID_`) REFERENCES `act_re_procdef` (`ID_`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `ACT_FK_TASK_PROCINST` FOREIGN KEY (`PROC_INST_ID_`) REFERENCES `act_ru_execution` (`ID_`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for act_ru_variable
+-- ----------------------------
+DROP TABLE IF EXISTS `act_ru_variable`;
+CREATE TABLE `act_ru_variable`  (
+  `ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `REV_` int(11) NULL DEFAULT NULL,
+  `TYPE_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `NAME_` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `EXECUTION_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `PROC_INST_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `TASK_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `BYTEARRAY_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `DOUBLE_` double NULL DEFAULT NULL,
+  `LONG_` bigint(20) NULL DEFAULT NULL,
+  `TEXT_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `TEXT2_` varchar(4000) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  PRIMARY KEY (`ID_`) USING BTREE,
+  INDEX `ACT_IDX_VARIABLE_TASK_ID`(`TASK_ID_`) USING BTREE,
+  INDEX `ACT_FK_VAR_EXE`(`EXECUTION_ID_`) USING BTREE,
+  INDEX `ACT_FK_VAR_PROCINST`(`PROC_INST_ID_`) USING BTREE,
+  INDEX `ACT_FK_VAR_BYTEARRAY`(`BYTEARRAY_ID_`) USING BTREE,
+  CONSTRAINT `ACT_FK_VAR_BYTEARRAY` FOREIGN KEY (`BYTEARRAY_ID_`) REFERENCES `act_ge_bytearray` (`ID_`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `ACT_FK_VAR_EXE` FOREIGN KEY (`EXECUTION_ID_`) REFERENCES `act_ru_execution` (`ID_`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `ACT_FK_VAR_PROCINST` FOREIGN KEY (`PROC_INST_ID_`) REFERENCES `act_ru_execution` (`ID_`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for gen_table
@@ -284,7 +772,7 @@ CREATE TABLE `qrtz_scheduler_state`  (
 -- ----------------------------
 -- Records of qrtz_scheduler_state
 -- ----------------------------
-INSERT INTO `qrtz_scheduler_state` VALUES ('RuoyiScheduler', 'LAPTOP-N0VHN7Q01592479579341', 1592479901698, 15000);
+INSERT INTO `qrtz_scheduler_state` VALUES ('RuoyiScheduler', 'LAPTOP-N0VHN7Q01592480532252', 1592481125367, 15000);
 
 -- ----------------------------
 -- Table structure for qrtz_simple_triggers
@@ -353,9 +841,9 @@ CREATE TABLE `qrtz_triggers`  (
 -- ----------------------------
 -- Records of qrtz_triggers
 -- ----------------------------
-INSERT INTO `qrtz_triggers` VALUES ('RuoyiScheduler', 'TASK_CLASS_NAME1', 'DEFAULT', 'TASK_CLASS_NAME1', 'DEFAULT', NULL, 1592479580000, -1, 5, 'PAUSED', 'CRON', 1592479579000, 0, NULL, 2, '');
-INSERT INTO `qrtz_triggers` VALUES ('RuoyiScheduler', 'TASK_CLASS_NAME2', 'DEFAULT', 'TASK_CLASS_NAME2', 'DEFAULT', NULL, 1592479590000, -1, 5, 'PAUSED', 'CRON', 1592479579000, 0, NULL, 2, '');
-INSERT INTO `qrtz_triggers` VALUES ('RuoyiScheduler', 'TASK_CLASS_NAME3', 'DEFAULT', 'TASK_CLASS_NAME3', 'DEFAULT', NULL, 1592479580000, -1, 5, 'PAUSED', 'CRON', 1592479579000, 0, NULL, 2, '');
+INSERT INTO `qrtz_triggers` VALUES ('RuoyiScheduler', 'TASK_CLASS_NAME1', 'DEFAULT', 'TASK_CLASS_NAME1', 'DEFAULT', NULL, 1592480540000, -1, 5, 'PAUSED', 'CRON', 1592480532000, 0, NULL, 2, '');
+INSERT INTO `qrtz_triggers` VALUES ('RuoyiScheduler', 'TASK_CLASS_NAME2', 'DEFAULT', 'TASK_CLASS_NAME2', 'DEFAULT', NULL, 1592480535000, -1, 5, 'PAUSED', 'CRON', 1592480532000, 0, NULL, 2, '');
+INSERT INTO `qrtz_triggers` VALUES ('RuoyiScheduler', 'TASK_CLASS_NAME3', 'DEFAULT', 'TASK_CLASS_NAME3', 'DEFAULT', NULL, 1592480540000, -1, 5, 'PAUSED', 'CRON', 1592480532000, 0, NULL, 2, '');
 
 -- ----------------------------
 -- Table structure for sys_config
@@ -571,7 +1059,7 @@ CREATE TABLE `sys_logininfor`  (
   `msg` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '提示消息',
   `login_time` datetime(0) NULL DEFAULT NULL COMMENT '访问时间',
   PRIMARY KEY (`info_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '系统访问记录' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 15 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '系统访问记录' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_logininfor
@@ -589,6 +1077,7 @@ INSERT INTO `sys_logininfor` VALUES (10, 'admin', '127.0.0.1', '内网IP', 'Chro
 INSERT INTO `sys_logininfor` VALUES (11, 'admin', '127.0.0.1', '内网IP', 'Chrome', 'Windows 10', '0', '登录成功', NULL);
 INSERT INTO `sys_logininfor` VALUES (12, 'admin', '127.0.0.1', '内网IP', 'Chrome', 'Windows 10', '0', '退出成功', NULL);
 INSERT INTO `sys_logininfor` VALUES (13, 'admin', '127.0.0.1', '内网IP', 'Chrome', 'Windows 10', '0', '登录成功', NULL);
+INSERT INTO `sys_logininfor` VALUES (14, 'admin', '127.0.0.1', '内网IP', 'Chrome', 'Windows 10', '0', '登录成功', NULL);
 
 -- ----------------------------
 -- Table structure for sys_menu
@@ -611,7 +1100,7 @@ CREATE TABLE `sys_menu`  (
   `update_time` datetime(0) NULL DEFAULT NULL COMMENT '更新时间',
   `remark` varchar(500) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '备注',
   PRIMARY KEY (`menu_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2001 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '菜单权限表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2014 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '菜单权限表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_menu
@@ -700,6 +1189,17 @@ INSERT INTO `sys_menu` VALUES (1058, '生成修改', 114, 2, '#', '', 'F', '0', 
 INSERT INTO `sys_menu` VALUES (1059, '生成删除', 114, 3, '#', '', 'F', '0', 'tool:gen:remove', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
 INSERT INTO `sys_menu` VALUES (1060, '预览代码', 114, 4, '#', '', 'F', '0', 'tool:gen:preview', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
 INSERT INTO `sys_menu` VALUES (1061, '生成代码', 114, 5, '#', '', 'F', '0', 'tool:gen:code', '#', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '');
+INSERT INTO `sys_menu` VALUES (2001, '工作流程', 0, 5, '', 'menuItem', 'M', '0', '', 'fa fa-wrench', 'admin', '2020-06-18 19:43:16', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2002, '模型管理', 2001, 1, '/activiti/model', 'menuBlank', 'C', '0', 'activiti:model:view', '', 'admin', '2020-06-18 19:44:18', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2003, '流程管理', 2001, 2, '/activiti/process', 'menuItem', 'C', '0', 'activiti:process:view', '', 'admin', '2020-06-18 19:45:02', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2004, '模型查询', 2002, 1, '', 'menuItem', 'F', '0', 'activiti:model:list', '', 'admin', '2020-06-18 19:45:36', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2005, '模型新增', 2002, 2, '', 'menuItem', 'F', '0', 'activiti:model:add', '', 'admin', '2020-06-18 19:45:51', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2006, '模型修改', 2002, 3, '', 'menuItem', 'F', '0', 'activiti:model:edit', '', 'admin', '2020-06-18 19:46:14', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2007, '模型删除', 2002, 4, '', 'menuItem', 'F', '0', 'activiti:model:remove', '', 'admin', '2020-06-18 19:46:41', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2008, '模型部署', 2002, 5, '', 'menuItem', 'F', '0', 'activiti:model:deploy', '', 'admin', '2020-06-18 19:47:17', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2010, '流程查询', 2003, 1, '', 'menuItem', 'F', '0', 'activiti:process:list', '', 'admin', '2020-06-18 19:48:04', '', NULL, '');
+INSERT INTO `sys_menu` VALUES (2011, '设置节点处理人', 2003, 2, '', 'menuItem', 'F', '0', 'activiti:assignee:add', '', 'admin', '2020-06-18 19:48:32', 'admin', '2020-06-18 19:50:40', '');
+INSERT INTO `sys_menu` VALUES (2012, '流程删除', 2003, 3, '', 'menuItem', 'F', '0', 'activiti:process:remove', '', 'admin', '2020-06-18 19:48:53', '', NULL, '');
 
 -- ----------------------------
 -- Table structure for sys_notice
@@ -747,7 +1247,7 @@ CREATE TABLE `sys_oper_log`  (
   `error_msg` varchar(2000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '错误消息',
   `oper_time` datetime(0) NULL DEFAULT NULL COMMENT '操作时间',
   PRIMARY KEY (`oper_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 17 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '操作日志记录' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 33 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '操作日志记录' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_oper_log
@@ -768,6 +1268,22 @@ INSERT INTO `sys_oper_log` VALUES (13, '代码生成', 2, 'com.ruoyi.generator.c
 INSERT INTO `sys_oper_log` VALUES (14, '代码生成', 2, 'com.ruoyi.generator.controller.GenController.editSave()', 'POST', 1, 'admin', '研发部门', '/tool/gen/edit', '127.0.0.1', '内网IP', '{\r\n  \"tableId\" : [ \"1\" ],\r\n  \"tableName\" : [ \"sys_notice\" ],\r\n  \"tableComment\" : [ \"通知公告表\" ],\r\n  \"className\" : [ \"SysNotice\" ],\r\n  \"functionAuthor\" : [ \"ruoyi\" ],\r\n  \"remark\" : [ \"\" ],\r\n  \"columns[0].columnId\" : [ \"1\" ],\r\n  \"columns[0].sort\" : [ \"1\" ],\r\n  \"columns[0].columnComment\" : [ \"公告ID\" ],\r\n  \"columns[0].javaType\" : [ \"Integer\" ],\r\n  \"columns[0].javaField\" : [ \"noticeId\" ],\r\n  \"columns[0].isInsert\" : [ \"1\" ],\r\n  \"columns[0].queryType\" : [ \"EQ\" ],\r\n  \"columns[0].htmlType\" : [ \"input\" ],\r\n  \"columns[0].dictType\" : [ \"\" ],\r\n  \"columns[1].columnId\" : [ \"3\" ],\r\n  \"columns[1].sort\" : [ \"3\" ],\r\n  \"columns[1].columnComment\" : [ \"公告类型（1通知 2公告）\" ],\r\n  \"columns[1].javaType\" : [ \"String\" ],\r\n  \"columns[1].javaField\" : [ \"noticeType\" ],\r\n  \"columns[1].isInsert\" : [ \"1\" ],\r\n  \"columns[1].isEdit\" : [ \"1\" ],\r\n  \"columns[1].isList\" : [ \"1\" ],\r\n  \"columns[1].isQuery\" : [ \"1\" ],\r\n  \"columns[1].queryType\" : [ \"EQ\" ],\r\n  \"columns[1].isRequired\" : [ \"1\" ],\r\n  \"columns[1].htmlType\" : [ \"select\" ],\r\n  \"columns[1].dictType\" : [ \"\" ],\r\n  \"columns[2].columnId\" : [ \"4\" ],\r\n  \"columns[2].sort\" : [ \"4\" ],\r\n  \"columns[2].columnComment\" : [ \"公告内容\" ],\r\n  \"columns[2].javaType\" : [ \"String\" ],\r\n  \"columns[2].javaField\" : [ \"noticeContent\" ],\r\n  \"columns[2].isInsert\" : [ \"1\" ],\r\n  \"columns[2].isEdit\" : [ \"1\" ],\r\n  \"columns[2].isList\" : [ \"1\" ],\r\n  \"columns[2].isQuery\" : [ \"1\" ],\r\n  \"columns[2].queryType\" : [ \"EQ\" ],\r\n  \"columns[2].htmlType\" : [ \"textarea\" ],\r\n  \"columns[2].dictType\" : [ \"\" ],\r\n  \"columns[3].columnId\" : [ \"5\" ],\r\n  \"columns[3].sort\" : [ \"5\" ],\r\n  \"columns[3].columnComment\" : [ \"公告状态（0正常 1关闭）\" ],\r\n  \"columns[3].javaType\" : [ \"String\" ],\r\n  \"columns[3].javaField\" : [ \"status\" ],\r\n  \"columns[3].isInsert\" : [ \"1\" ],\r\n  \"columns[3].isEdit\" : [ \"1\" ],\r\n  \"columns[3].isList\" : [ \"1\" ],\r\n  \"columns[3].isQuery\" : [ \"1\" ],\r\n  \"columns[3].queryType\" : [ \"EQ\" ],\r\n  \"columns[3].htmlType\" : [ \"radio\" ],\r\n  \"columns[3].dictType\" : [ \"\" ],\r\n  \"columns[4].columnId\" : [ \"6\" ],\r\n  \"columns[4].sort\"', '{\r\n  \"msg\" : \"操作成功\",\r\n  \"code\" : 0\r\n}', 0, '', NULL);
 INSERT INTO `sys_oper_log` VALUES (15, '个人信息', 2, 'com.ruoyi.web.controller.system.SysProfileController.update()', 'POST', 1, 'admin', '研发部门', '/system/user/profile/update', '127.0.0.1', '内网IP', '{\r\n  \"id\" : [ \"\" ],\r\n  \"userName\" : [ \"若依\" ],\r\n  \"phonenumber\" : [ \"15888888888\" ],\r\n  \"email\" : [ \"ry@163.com\" ],\r\n  \"sex\" : [ \"1\" ]\r\n}', '{\r\n  \"msg\" : \"操作成功\",\r\n  \"code\" : 0\r\n}', 0, '', NULL);
 INSERT INTO `sys_oper_log` VALUES (16, '个人信息', 2, 'com.ruoyi.web.controller.system.SysProfileController.updateAvatar()', 'POST', 1, 'admin', '研发部门', '/system/user/profile/updateAvatar', '127.0.0.1', '内网IP', '{ }', '{\r\n  \"msg\" : \"操作成功\",\r\n  \"code\" : 0\r\n}', 0, '', NULL);
+INSERT INTO `sys_oper_log` VALUES (17, '菜单管理', 1, 'com.ruoyi.web.controller.system.SysMenuController.addSave()', 'POST', 1, 'admin', '研发部门', '/system/menu/add', '127.0.0.1', '内网IP', '{\r\n  \"parentId\" : [ \"0\" ],\r\n  \"menuType\" : [ \"M\" ],\r\n  \"menuName\" : [ \"工作流程\" ],\r\n  \"url\" : [ \"\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"\" ],\r\n  \"orderNum\" : [ \"5\" ],\r\n  \"icon\" : [ \"fa fa-wrench\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"操作成功\",\r\n  \"code\" : 0\r\n}', 0, '', NULL);
+INSERT INTO `sys_oper_log` VALUES (18, '菜单管理', 1, 'com.ruoyi.web.controller.system.SysMenuController.addSave()', 'POST', 1, 'admin', '研发部门', '/system/menu/add', '127.0.0.1', '内网IP', '{\r\n  \"parentId\" : [ \"2001\" ],\r\n  \"menuType\" : [ \"C\" ],\r\n  \"menuName\" : [ \"模型管理\" ],\r\n  \"url\" : [ \"/activiti/model\" ],\r\n  \"target\" : [ \"menuBlank\" ],\r\n  \"perms\" : [ \"activiti:model:view\" ],\r\n  \"orderNum\" : [ \"1\" ],\r\n  \"icon\" : [ \"\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"操作成功\",\r\n  \"code\" : 0\r\n}', 0, '', NULL);
+INSERT INTO `sys_oper_log` VALUES (19, '菜单管理', 1, 'com.ruoyi.web.controller.system.SysMenuController.addSave()', 'POST', 1, 'admin', '研发部门', '/system/menu/add', '127.0.0.1', '内网IP', '{\r\n  \"parentId\" : [ \"2001\" ],\r\n  \"menuType\" : [ \"C\" ],\r\n  \"menuName\" : [ \"流程管理\" ],\r\n  \"url\" : [ \"/activiti/process\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"activiti:process:view\" ],\r\n  \"orderNum\" : [ \"2\" ],\r\n  \"icon\" : [ \"\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"操作成功\",\r\n  \"code\" : 0\r\n}', 0, '', NULL);
+INSERT INTO `sys_oper_log` VALUES (20, '菜单管理', 1, 'com.ruoyi.web.controller.system.SysMenuController.addSave()', 'POST', 1, 'admin', '研发部门', '/system/menu/add', '127.0.0.1', '内网IP', '{\r\n  \"parentId\" : [ \"2002\" ],\r\n  \"menuType\" : [ \"F\" ],\r\n  \"menuName\" : [ \"模型查询\" ],\r\n  \"url\" : [ \"\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"activiti:model:list\" ],\r\n  \"orderNum\" : [ \"1\" ],\r\n  \"icon\" : [ \"\" ]\r\n}', '{\r\n  \"msg\" : \"操作成功\",\r\n  \"code\" : 0\r\n}', 0, '', NULL);
+INSERT INTO `sys_oper_log` VALUES (21, '菜单管理', 1, 'com.ruoyi.web.controller.system.SysMenuController.addSave()', 'POST', 1, 'admin', '研发部门', '/system/menu/add', '127.0.0.1', '内网IP', '{\r\n  \"parentId\" : [ \"2002\" ],\r\n  \"menuType\" : [ \"F\" ],\r\n  \"menuName\" : [ \"模型新增\" ],\r\n  \"url\" : [ \"\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"activiti:model:add\" ],\r\n  \"orderNum\" : [ \"2\" ],\r\n  \"icon\" : [ \"\" ]\r\n}', '{\r\n  \"msg\" : \"操作成功\",\r\n  \"code\" : 0\r\n}', 0, '', NULL);
+INSERT INTO `sys_oper_log` VALUES (22, '菜单管理', 1, 'com.ruoyi.web.controller.system.SysMenuController.addSave()', 'POST', 1, 'admin', '研发部门', '/system/menu/add', '127.0.0.1', '内网IP', '{\r\n  \"parentId\" : [ \"2002\" ],\r\n  \"menuType\" : [ \"F\" ],\r\n  \"menuName\" : [ \"模型修改\" ],\r\n  \"url\" : [ \"\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"activiti:model:edit\" ],\r\n  \"orderNum\" : [ \"3\" ],\r\n  \"icon\" : [ \"\" ]\r\n}', '{\r\n  \"msg\" : \"操作成功\",\r\n  \"code\" : 0\r\n}', 0, '', NULL);
+INSERT INTO `sys_oper_log` VALUES (23, '菜单管理', 1, 'com.ruoyi.web.controller.system.SysMenuController.addSave()', 'POST', 1, 'admin', '研发部门', '/system/menu/add', '127.0.0.1', '内网IP', '{\r\n  \"parentId\" : [ \"2002\" ],\r\n  \"menuType\" : [ \"F\" ],\r\n  \"menuName\" : [ \"模型删除\" ],\r\n  \"url\" : [ \"\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"activiti:model:remove\" ],\r\n  \"orderNum\" : [ \"4\" ],\r\n  \"icon\" : [ \"\" ]\r\n}', '{\r\n  \"msg\" : \"操作成功\",\r\n  \"code\" : 0\r\n}', 0, '', NULL);
+INSERT INTO `sys_oper_log` VALUES (24, '菜单管理', 1, 'com.ruoyi.web.controller.system.SysMenuController.addSave()', 'POST', 1, 'admin', '研发部门', '/system/menu/add', '127.0.0.1', '内网IP', '{\r\n  \"parentId\" : [ \"2002\" ],\r\n  \"menuType\" : [ \"F\" ],\r\n  \"menuName\" : [ \"模型部署\" ],\r\n  \"url\" : [ \"\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"activiti:model:deploy\" ],\r\n  \"orderNum\" : [ \"5\" ],\r\n  \"icon\" : [ \"\" ]\r\n}', '{\r\n  \"msg\" : \"操作成功\",\r\n  \"code\" : 0\r\n}', 0, '', NULL);
+INSERT INTO `sys_oper_log` VALUES (25, '菜单管理', 1, 'com.ruoyi.web.controller.system.SysMenuController.addSave()', 'POST', 1, 'admin', '研发部门', '/system/menu/add', '127.0.0.1', '内网IP', '{\r\n  \"parentId\" : [ \"2002\" ],\r\n  \"menuType\" : [ \"F\" ],\r\n  \"menuName\" : [ \"模型导出\" ],\r\n  \"url\" : [ \"\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"activiti:model:export\" ],\r\n  \"orderNum\" : [ \"6\" ],\r\n  \"icon\" : [ \"\" ]\r\n}', '{\r\n  \"msg\" : \"操作成功\",\r\n  \"code\" : 0\r\n}', 0, '', NULL);
+INSERT INTO `sys_oper_log` VALUES (26, '菜单管理', 1, 'com.ruoyi.web.controller.system.SysMenuController.addSave()', 'POST', 1, 'admin', '研发部门', '/system/menu/add', '127.0.0.1', '内网IP', '{\r\n  \"parentId\" : [ \"2003\" ],\r\n  \"menuType\" : [ \"F\" ],\r\n  \"menuName\" : [ \"流程查询\" ],\r\n  \"url\" : [ \"\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"activiti:process:list\" ],\r\n  \"orderNum\" : [ \"1\" ],\r\n  \"icon\" : [ \"\" ]\r\n}', '{\r\n  \"msg\" : \"操作成功\",\r\n  \"code\" : 0\r\n}', 0, '', NULL);
+INSERT INTO `sys_oper_log` VALUES (27, '菜单管理', 1, 'com.ruoyi.web.controller.system.SysMenuController.addSave()', 'POST', 1, 'admin', '研发部门', '/system/menu/add', '127.0.0.1', '内网IP', '{\r\n  \"parentId\" : [ \"2003\" ],\r\n  \"menuType\" : [ \"F\" ],\r\n  \"menuName\" : [ \"流程新增\" ],\r\n  \"url\" : [ \"\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"activiti:process:add\" ],\r\n  \"orderNum\" : [ \"2\" ],\r\n  \"icon\" : [ \"\" ]\r\n}', '{\r\n  \"msg\" : \"操作成功\",\r\n  \"code\" : 0\r\n}', 0, '', NULL);
+INSERT INTO `sys_oper_log` VALUES (28, '菜单管理', 1, 'com.ruoyi.web.controller.system.SysMenuController.addSave()', 'POST', 1, 'admin', '研发部门', '/system/menu/add', '127.0.0.1', '内网IP', '{\r\n  \"parentId\" : [ \"2003\" ],\r\n  \"menuType\" : [ \"F\" ],\r\n  \"menuName\" : [ \"流程删除\" ],\r\n  \"url\" : [ \"\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"activiti:process:remove\" ],\r\n  \"orderNum\" : [ \"3\" ],\r\n  \"icon\" : [ \"\" ]\r\n}', '{\r\n  \"msg\" : \"操作成功\",\r\n  \"code\" : 0\r\n}', 0, '', NULL);
+INSERT INTO `sys_oper_log` VALUES (29, '菜单管理', 1, 'com.ruoyi.web.controller.system.SysMenuController.addSave()', 'POST', 1, 'admin', '研发部门', '/system/menu/add', '127.0.0.1', '内网IP', '{\r\n  \"parentId\" : [ \"2003\" ],\r\n  \"menuType\" : [ \"F\" ],\r\n  \"menuName\" : [ \"转为模型\" ],\r\n  \"url\" : [ \"\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"activiti:process:model\" ],\r\n  \"orderNum\" : [ \"4\" ],\r\n  \"icon\" : [ \"\" ]\r\n}', '{\r\n  \"msg\" : \"操作成功\",\r\n  \"code\" : 0\r\n}', 0, '', NULL);
+INSERT INTO `sys_oper_log` VALUES (30, '菜单管理', 2, 'com.ruoyi.web.controller.system.SysMenuController.editSave()', 'POST', 1, 'admin', '研发部门', '/system/menu/edit', '127.0.0.1', '内网IP', '{\r\n  \"menuId\" : [ \"2011\" ],\r\n  \"parentId\" : [ \"2003\" ],\r\n  \"menuType\" : [ \"F\" ],\r\n  \"menuName\" : [ \"设置节点处理人\" ],\r\n  \"url\" : [ \"\" ],\r\n  \"target\" : [ \"menuItem\" ],\r\n  \"perms\" : [ \"activiti:assignee:add\" ],\r\n  \"orderNum\" : [ \"2\" ],\r\n  \"icon\" : [ \"\" ],\r\n  \"visible\" : [ \"0\" ]\r\n}', '{\r\n  \"msg\" : \"操作成功\",\r\n  \"code\" : 0\r\n}', 0, '', NULL);
+INSERT INTO `sys_oper_log` VALUES (31, '菜单管理', 3, 'com.ruoyi.web.controller.system.SysMenuController.remove()', 'GET', 1, 'admin', '研发部门', '/system/menu/remove/2013', '127.0.0.1', '内网IP', '{ }', '{\r\n  \"msg\" : \"操作成功\",\r\n  \"code\" : 0\r\n}', 0, '', NULL);
+INSERT INTO `sys_oper_log` VALUES (32, '菜单管理', 3, 'com.ruoyi.web.controller.system.SysMenuController.remove()', 'GET', 1, 'admin', '研发部门', '/system/menu/remove/2009', '127.0.0.1', '内网IP', '{ }', '{\r\n  \"msg\" : \"操作成功\",\r\n  \"code\" : 0\r\n}', 0, '', NULL);
 
 -- ----------------------------
 -- Table structure for sys_post
@@ -965,7 +1481,7 @@ CREATE TABLE `sys_user`  (
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
-INSERT INTO `sys_user` VALUES (1, 103, 'admin', '若依', '00', 'ry@163.com', '15888888888', '1', '/profile/avatar/2020/06/18/8817da7e6c988037314a41830f20cb58.png', '29c67a30398638269fe600f73a054934', '111111', '0', '0', '127.0.0.1', '2020-06-18 15:26:16', 'admin', '2018-03-16 11:33:00', 'admin', '2020-06-18 15:26:33', '管理员');
+INSERT INTO `sys_user` VALUES (1, 103, 'admin', '若依', '00', 'ry@163.com', '15888888888', '1', '/profile/avatar/2020/06/18/8817da7e6c988037314a41830f20cb58.png', '29c67a30398638269fe600f73a054934', '111111', '0', '0', '127.0.0.1', '2020-06-18 19:42:26', 'admin', '2018-03-16 11:33:00', 'admin', '2020-06-18 15:26:33', '管理员');
 INSERT INTO `sys_user` VALUES (2, 105, 'ry', '若依', '00', 'ry@qq.com', '15666666666', '1', '', '8e6d98b90472783cc73c17047ddccf36', '222222', '0', '0', '127.0.0.1', '2018-03-16 11:33:00', 'admin', '2018-03-16 11:33:00', 'ry', '2018-03-16 11:33:00', '测试员');
 INSERT INTO `sys_user` VALUES (100, 103, '11', '111', '00', '1@2.com', '15753340312', '0', '', 'e7eaf41f2540d155ffe3827f64b38b0c', 'd58fe8', '0', '0', '', NULL, 'admin', '2020-06-17 23:36:51', 'admin', '2020-06-18 11:17:49', 'dsaa');
 
@@ -995,7 +1511,7 @@ CREATE TABLE `sys_user_online`  (
 -- ----------------------------
 -- Records of sys_user_online
 -- ----------------------------
-INSERT INTO `sys_user_online` VALUES ('a2d93661-a4e4-4fc4-bfcf-7ba3b5c53db7', 'admin', '研发部门', '127.0.0.1', '内网IP', 'Chrome', 'Windows 10', '在线', '2020-06-18 15:26:11', '2020-06-18 15:26:16', 1800000, NULL, NULL, NULL, NULL);
+INSERT INTO `sys_user_online` VALUES ('21f3c831-a1de-456b-b8d2-b70084f6c207', 'admin', '研发部门', '127.0.0.1', '内网IP', 'Chrome', 'Windows 10', '在线', '2020-06-18 19:42:23', '2020-06-18 19:42:26', 1800000, NULL, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for sys_user_post
