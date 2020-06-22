@@ -2,8 +2,6 @@ package com.ruoyi.generator.service;
 
 import java.util.List;
 import java.util.Map;
-
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.generator.domain.GenTable;
 
 /**
@@ -11,7 +9,7 @@ import com.ruoyi.generator.domain.GenTable;
  * 
  * @author ruoyi
  */
-public interface IGenTableService extends IService<GenTable>
+public interface IGenTableService
 {
     /**
      * 查询业务列表

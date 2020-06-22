@@ -1,9 +1,6 @@
 package com.ruoyi.generator.service.impl;
 
-import java.util.Arrays;
 import java.util.List;
-
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.ruoyi.common.core.text.Convert;
@@ -17,7 +14,7 @@ import com.ruoyi.generator.service.IGenTableColumnService;
  * @author ruoyi
  */
 @Service
-public class GenTableColumnServiceImpl extends ServiceImpl<GenTableColumnMapper,GenTableColumn> implements IGenTableColumnService
+public class GenTableColumnServiceImpl implements IGenTableColumnService
 {
     @Autowired
     private GenTableColumnMapper genTableColumnMapper;
@@ -43,7 +40,7 @@ public class GenTableColumnServiceImpl extends ServiceImpl<GenTableColumnMapper,
     @Override
     public int insertGenTableColumn(GenTableColumn genTableColumn)
     {
-        return genTableColumnMapper.insert(genTableColumn);
+        return genTableColumnMapper.insertGenTableColumn(genTableColumn);
     }
 
     /**
@@ -55,7 +52,7 @@ public class GenTableColumnServiceImpl extends ServiceImpl<GenTableColumnMapper,
     @Override
     public int updateGenTableColumn(GenTableColumn genTableColumn)
     {
-        return genTableColumnMapper.updateById(genTableColumn);
+        return genTableColumnMapper.updateGenTableColumn(genTableColumn);
     }
 
     /**
@@ -67,6 +64,6 @@ public class GenTableColumnServiceImpl extends ServiceImpl<GenTableColumnMapper,
     @Override
     public int deleteGenTableColumnByIds(String ids)
     {
-        return genTableColumnMapper.deleteBatchIds(Arrays.asList(Convert.toLongArray(ids)));
+        return genTableColumnMapper.deleteGenTableColumnByIds(Convert.toLongArray(ids));
     }
 }

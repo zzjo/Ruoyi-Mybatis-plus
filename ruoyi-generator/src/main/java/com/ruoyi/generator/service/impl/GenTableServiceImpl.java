@@ -3,14 +3,11 @@ package com.ruoyi.generator.service.impl;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.io.IOUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -42,7 +39,7 @@ import com.ruoyi.generator.util.VelocityUtils;
  * @author ruoyi
  */
 @Service
-public class GenTableServiceImpl extends ServiceImpl<GenTableMapper,GenTable> implements IGenTableService
+public class GenTableServiceImpl implements IGenTableService
 {
     private static final Logger log = LoggerFactory.getLogger(GenTableServiceImpl.class);
 
@@ -107,7 +104,6 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper,GenTable> im
      * 
      * @return 表信息集合
      */
-    @Override
     public List<GenTable> selectGenTableAll()
     {
         return genTableMapper.selectGenTableAll();
@@ -125,12 +121,12 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper,GenTable> im
     {
         String options = JSON.toJSONString(genTable.getParams());
         genTable.setOptions(options);
-        int row = genTableMapper.updateById(genTable);
+        int row = genTableMapper.updateGenTable(genTable);
         if (row > 0)
         {
             for (GenTableColumn cenTableColumn : genTable.getColumns())
             {
-                genTableColumnMapper.updateById(cenTableColumn);
+                genTableColumnMapper.updateGenTableColumn(cenTableColumn);
             }
         }
     }
@@ -145,8 +141,8 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper,GenTable> im
     @Transactional
     public void deleteGenTableByIds(String ids)
     {
-        genTableMapper.deleteBatchIds(Arrays.asList(Convert.toLongArray(ids)));
-        genTableColumnMapper.deleteBatchIds(Arrays.asList(Convert.toLongArray(ids)));
+        genTableMapper.deleteGenTableByIds(Convert.toLongArray(ids));
+        genTableColumnMapper.deleteGenTableColumnByIds(Convert.toLongArray(ids));
     }
 
     /**
@@ -165,7 +161,7 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper,GenTable> im
             {
                 String tableName = table.getTableName();
                 GenUtils.initTable(table, operName);
-                int row = genTableMapper.insert(table);
+                int row = genTableMapper.insertGenTable(table);
                 if (row > 0)
                 {
                     // 保存列信息
@@ -173,7 +169,7 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper,GenTable> im
                     for (GenTableColumn column : genTableColumns)
                     {
                         GenUtils.initColumnField(column, table);
-                        genTableColumnMapper.insert(column);
+                        genTableColumnMapper.insertGenTableColumn(column);
                     }
                 }
             }

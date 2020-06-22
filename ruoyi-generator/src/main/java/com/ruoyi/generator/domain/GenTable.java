@@ -3,14 +3,6 @@ package com.ruoyi.generator.domain;
 import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.experimental.Accessors;
 import org.apache.commons.lang3.ArrayUtils;
 import com.ruoyi.common.constant.GenConstants;
 import com.ruoyi.common.core.domain.BaseEntity;
@@ -21,16 +13,11 @@ import com.ruoyi.common.utils.StringUtils;
  * 
  * @author ruoyi
  */
-@Data
-@EqualsAndHashCode(callSuper = false)
-@Accessors(chain = true)
-@TableName("gen_table")
 public class GenTable extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
     /** 编号 */
-    @TableId(type = IdType.AUTO)
     private Long tableId;
 
     /** 表名称 */
@@ -82,7 +69,6 @@ public class GenTable extends BaseEntity
 
     /** 表列信息 */
     @Valid
-    @TableField(exist = false)
     private List<GenTableColumn> columns;
 
     /** 其它生成选项 */
@@ -96,6 +82,196 @@ public class GenTable extends BaseEntity
 
     /** 树名称字段 */
     private String treeName;
+
+    public Long getTableId()
+    {
+        return tableId;
+    }
+
+    public void setTableId(Long tableId)
+    {
+        this.tableId = tableId;
+    }
+
+    public String getTableName()
+    {
+        return tableName;
+    }
+
+    public void setTableName(String tableName)
+    {
+        this.tableName = tableName;
+    }
+
+    public String getTableComment()
+    {
+        return tableComment;
+    }
+
+    public void setTableComment(String tableComment)
+    {
+        this.tableComment = tableComment;
+    }
+
+    public String getSubTableName()
+    {
+        return subTableName;
+    }
+
+    public void setSubTableName(String subTableName)
+    {
+        this.subTableName = subTableName;
+    }
+
+    public String getSubTableFkName()
+    {
+        return subTableFkName;
+    }
+
+    public void setSubTableFkName(String subTableFkName)
+    {
+        this.subTableFkName = subTableFkName;
+    }
+
+    public String getClassName()
+    {
+        return className;
+    }
+
+    public void setClassName(String className)
+    {
+        this.className = className;
+    }
+
+    public String getTplCategory()
+    {
+        return tplCategory;
+    }
+
+    public void setTplCategory(String tplCategory)
+    {
+        this.tplCategory = tplCategory;
+    }
+
+    public String getPackageName()
+    {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName)
+    {
+        this.packageName = packageName;
+    }
+
+    public String getModuleName()
+    {
+        return moduleName;
+    }
+
+    public void setModuleName(String moduleName)
+    {
+        this.moduleName = moduleName;
+    }
+
+    public String getBusinessName()
+    {
+        return businessName;
+    }
+
+    public void setBusinessName(String businessName)
+    {
+        this.businessName = businessName;
+    }
+
+    public String getFunctionName()
+    {
+        return functionName;
+    }
+
+    public void setFunctionName(String functionName)
+    {
+        this.functionName = functionName;
+    }
+
+    public String getFunctionAuthor()
+    {
+        return functionAuthor;
+    }
+
+    public void setFunctionAuthor(String functionAuthor)
+    {
+        this.functionAuthor = functionAuthor;
+    }
+
+    public GenTableColumn getPkColumn()
+    {
+        return pkColumn;
+    }
+
+    public void setPkColumn(GenTableColumn pkColumn)
+    {
+        this.pkColumn = pkColumn;
+    }
+
+    public GenTable getSubTable()
+    {
+        return subTable;
+    }
+
+    public void setSubTable(GenTable subTable)
+    {
+        this.subTable = subTable;
+    }
+
+    public List<GenTableColumn> getColumns()
+    {
+        return columns;
+    }
+
+    public void setColumns(List<GenTableColumn> columns)
+    {
+        this.columns = columns;
+    }
+
+    public String getOptions()
+    {
+        return options;
+    }
+
+    public void setOptions(String options)
+    {
+        this.options = options;
+    }
+
+    public String getTreeCode()
+    {
+        return treeCode;
+    }
+
+    public void setTreeCode(String treeCode)
+    {
+        this.treeCode = treeCode;
+    }
+
+    public String getTreeParentCode()
+    {
+        return treeParentCode;
+    }
+
+    public void setTreeParentCode(String treeParentCode)
+    {
+        this.treeParentCode = treeParentCode;
+    }
+
+    public String getTreeName()
+    {
+        return treeName;
+    }
+
+    public void setTreeName(String treeName)
+    {
+        this.treeName = treeName;
+    }
 
     public boolean isSub()
     {
