@@ -16,3 +16,5 @@
 /ruoyi-system/ruoyi-system.iml
 /ruoyi-activiti/target
 /ruoyi-activiti/ruoyi-activiti.iml
+*/target
+*.gitignore

@@ -1,13 +1,18 @@
 package com.ruoyi.generator.service.impl;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.lang.reflect.GenericArrayType;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+import com.ruoyi.generator.config.GenConfig;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -104,6 +109,7 @@ public class GenTableServiceImpl implements IGenTableService
      * 
      * @return 表信息集合
      */
+    @Override
     public List<GenTable> selectGenTableAll()
     {
         return genTableMapper.selectGenTableAll();
@@ -220,13 +226,14 @@ public class GenTableServiceImpl implements IGenTableService
      * @return 数据
      */
     @Override
-    public byte[] generatorCode(String tableName)
+    public void generatorCode(String tableName)
     {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        ZipOutputStream zip = new ZipOutputStream(outputStream);
-        generatorCode(tableName, zip);
-        IOUtils.closeQuietly(zip);
-        return outputStream.toByteArray();
+        generatorCode(tableName, null);
+//        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+//        ZipOutputStream zip = new ZipOutputStream(outputStream);
+//        generatorCode(tableName, zip);
+//        IOUtils.closeQuietly(zip);
+//        return outputStream.toByteArray();
     }
 
     /**
@@ -274,12 +281,15 @@ public class GenTableServiceImpl implements IGenTableService
             tpl.merge(context, sw);
             try
             {
+                //文件输出
+                File file=new File(GenConfig.getPackagePath()+"/src/"+VelocityUtils.getFileName(template, table));
+                FileUtils.writeStringToFile(file,sw.toString(), Constants.UTF8);
                 // 添加到zip
-                zip.putNextEntry(new ZipEntry(VelocityUtils.getFileName(template, table)));
-                IOUtils.write(sw.toString(), zip, Constants.UTF8);
-                IOUtils.closeQuietly(sw);
-                zip.flush();
-                zip.closeEntry();
+//                zip.putNextEntry(new ZipEntry(VelocityUtils.getFileName(template, table)));
+//                IOUtils.write(sw.toString(), zip, Constants.UTF8);
+//                IOUtils.closeQuietly(sw);
+//                zip.flush();
+//                zip.closeEntry();
             }
             catch (IOException e)
             {

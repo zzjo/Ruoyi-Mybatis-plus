@@ -88,7 +88,7 @@ public interface IGenTableService
      * @param tableName 表名称
      * @return 数据
      */
-    public byte[] generatorCode(String tableName);
+    public void generatorCode(String tableName);
 
     /**
      * 批量生成代码

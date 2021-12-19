@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.weixin.mapper.PictureLibraryMapper">
+    
+    <resultMap type="PictureLibrary" id="PictureLibraryResult">
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+        <result property="id"    column="id"    />
+        <result property="holidaysMenuId"    column="holidays_menu_id"    />
+        <result property="picturePath"    column="picture_path"    />
+    </resultMap>
+
+    <sql id="selectPictureLibraryVo">
+        select create_by, create_time, update_by, update_time, remark, id, holidays_menu_id, picture_path from wx_picture_library
+    </sql>
+
+    <select id="selectPictureLibraryList" parameterType="PictureLibrary" resultMap="PictureLibraryResult">
+        <include refid="selectPictureLibraryVo"/>
+        <where>  
+            <if test="holidaysMenuId != null "> and holidays_menu_id = #{holidaysMenuId}</if>
+            <if test="picturePath != null  and picturePath != ''"> and picture_path = #{picturePath}</if>
+        </where>
+    </select>
+
+</mapper>

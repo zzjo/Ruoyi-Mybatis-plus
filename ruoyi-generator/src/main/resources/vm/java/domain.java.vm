@@ -9,6 +9,10 @@ import com.ruoyi.common.annotation.Excel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.IdType;
+import javax.validation.constraints.NotBlank;
 #if($table.crud || $table.sub)
 import com.ruoyi.common.core.domain.BaseEntity;
 #elseif($table.tree)

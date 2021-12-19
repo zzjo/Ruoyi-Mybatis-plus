@@ -27,6 +27,9 @@ public class GenConfig
     /** 表前缀(类名不会包含表前缀) */
     public static String tablePrefix;
 
+    /** 包路径 */
+    public static String packagePath;
+
     public static String getAuthor()
     {
         return author;
@@ -70,4 +73,17 @@ public class GenConfig
     {
         GenConfig.tablePrefix = tablePrefix;
     }
+
+    public static String getPackagePath()
+    {
+        return packagePath;
+    }
+
+    @Value("${packagePath}")
+    public void setPackagePath(String packagePath)
+    {
+        GenConfig.packagePath = packagePath;
+    }
+
+
 }

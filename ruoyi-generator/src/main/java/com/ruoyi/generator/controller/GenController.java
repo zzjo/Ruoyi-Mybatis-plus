@@ -195,8 +195,9 @@ public class GenController extends BaseController
     @GetMapping("/genCode/{tableName}")
     public void genCode(HttpServletResponse response, @PathVariable("tableName") String tableName) throws IOException
     {
-        byte[] data = genTableService.generatorCode(tableName);
-        genCode(response, data);
+         genTableService.generatorCode(tableName);
+//        byte[] data = genTableService.generatorCode(tableName);
+//        genCode(response, data);
     }
 
     /**

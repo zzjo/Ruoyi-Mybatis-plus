@@ -265,7 +265,12 @@
 				<artifactId>ruoyi-activiti</artifactId>
 				<version>${ruoyi.version}</version>
 			</dependency>
-	        
+			<!-- 微信-->
+			<dependency>
+				<groupId>com.ruoyi</groupId>
+				<artifactId>ruoyi-wechat</artifactId>
+				<version>${ruoyi.version}</version>
+			</dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -277,7 +282,8 @@
 		<module>ruoyi-generator</module>
         <module>ruoyi-common</module>
 		<module>ruoyi-activiti</module>
-	</modules>
+        <module>ruoyi-wechat</module>
+    </modules>
     <packaging>pom</packaging>
 
 	<build>

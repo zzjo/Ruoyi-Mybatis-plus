@@ -2,9 +2,9 @@ package ${packageName}.service.impl;
 
 import java.util.List;
 import java.util.Arrays;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 #if($table.tree)
 import java.util.ArrayList;
-
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ruoyi.common.core.domain.Ztree;
 #end
@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import com.ruoyi.common.utils.StringUtils;
 import org.springframework.transaction.annotation.Transactional;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import ${packageName}.domain.${subClassName};
 #end
 import ${packageName}.mapper.${ClassName}Mapper;
